@@ -16,14 +16,15 @@ pipeline {
         }
         stage("Push to Docker Hub"){
             steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"chandu228",usernameVariable:"chandu228preethi")]){
-                sh "docker tag my-note-app ${env.dockerhubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerhubUser} -p ${env.dockerhubPass}"
-                sh "docker push ${env.dockerhubUser}/my-note-app:latest"
-                }
-            }
+                echo "Pushing the image to Docker Hub"
+                withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "DOCKERHUB_PASSWORD", usernameVariable: "DOCKERHUB_USERNAME")]){
+                sh "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD"
+                sh "docker tag my-note-app ${env.DOCKERHUB_USERNAME}/my-note-app:latest"
+                sh "docker push ${env.DOCKERHUB_USERNAME}/my-note-app:latest"
         }
+    }
+}
+
         stage("Deploy"){
             steps {
                 echo "Deploying the container"
